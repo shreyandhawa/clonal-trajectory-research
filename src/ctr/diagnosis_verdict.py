@@ -15,7 +15,7 @@ import argparse
 import json
 import math
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -131,7 +131,11 @@ def criterion_table(
         v = dict(r.tree_likeness)[1.0]
         return 0.0 if math.isnan(v) else v
 
-    getters = {"C2": c2, "C3": lambda r: r.lineage_stability, "C4": lambda r: r.pseudotime_stability}
+    getters: dict[str, Callable[[RunRecord], float]] = {
+        "C2": c2,
+        "C3": lambda r: r.lineage_stability,
+        "C4": lambda r: r.pseudotime_stability,
+    }
     ok_cal = [r for r in calib if r.error is None and r.group == "matrix"]
     per_dataset = {r.dataset: r for r in ok_cal}.values()  # C2 repeats across methods
     bars: dict[str, dict[str, float]] = {"C1": {"fixed": coverage_min}}
@@ -204,16 +208,19 @@ def latent_coordinate(obs: Any, kind: str) -> npt.NDArray[np.float64] | None:
     corner (sheet), the group (two_groups), true pseudotime (a tree); None for a blob."""
     if kind == "loop":
         theta = obs["control_angle"].to_numpy(dtype=np.float64)
-        return np.minimum(theta, 2 * np.pi - theta)
+        return np.asarray(np.minimum(theta, 2 * np.pi - theta), dtype=np.float64)
     if kind == "sheet":
-        return np.hypot(
-            obs["control_x"].to_numpy(dtype=np.float64), obs["control_y"].to_numpy(dtype=np.float64)
+        return np.asarray(
+            np.hypot(
+                obs["control_x"].to_numpy(dtype=np.float64), obs["control_y"].to_numpy(dtype=np.float64)
+            ),
+            dtype=np.float64,
         )
     if kind == "two_groups":
-        return obs["control_group"].to_numpy(dtype=np.float64)
+        return np.asarray(obs["control_group"].to_numpy(dtype=np.float64), dtype=np.float64)
     if kind == "blob":
         return None
-    return obs["true_pseudotime"].to_numpy(dtype=np.float64)
+    return np.asarray(obs["true_pseudotime"].to_numpy(dtype=np.float64), dtype=np.float64)
 
 
 def latent_correlation(pseudotime: F64, latent: F64 | None) -> float:
