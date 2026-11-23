@@ -7,16 +7,16 @@ for this page. Every number below is read from a result file. The draft takes it
 ## The claim
 
 > **1.** The verdict rule of the trajectory tool lumencell, as it was checked, looks at one thing: whether at
-> least 95% of cells get a pseudotime. On lumencell 0.5.0 it rated 27 of 30 negative-control runs
+> least 95% of cells get a pseudotime. On lumencell 0.5.0 it rated <!--n:verdict.r2-->27 of 30<!--/n--> negative-control runs
 > "supported" (every blob, loop and sheet run), although a tree measure that uses none of the rule's inputs
 > separates all four control kinds from the tree datasets.[^verdict]
 >
-> **2.** In one public CAR-T dataset (Sheih et al. 2020: four patients, three methods, 12 runs), agreement
+> **2.** In one public CAR-T dataset (Sheih et al. 2020: four patients, three methods, <!--n:clonal.n_runs-->12<!--/n--> runs), agreement
 > between T-cell-receptor clones and the returned lineages, scored against a clone shuffle within time point,
-> is under half its value against a shuffle within patient in the point estimate of every run (ratio 0.03 to
-> 0.49; the two highest bootstrap intervals reach 0.62 and 0.77). A k-means clustering that uses no trajectory
-> comes within 0.05 of the score in every run; the lift's bootstrap interval is above zero in 4 runs and
-> wholly below zero in 3.[^clonal]
+> is under half its value against a shuffle within patient in the point estimate of every run (ratio <!--n:clonal.R_range-->0.03 to
+> 0.49<!--/n-->; the two highest bootstrap intervals reach <!--n:clonal.NHL-7/palantir.R_hi-->0.625<!--/n--> and <!--n:clonal.NHL-7/scfates_ppt.R_hi-->0.770<!--/n-->). A k-means clustering that uses no trajectory
+> comes within <!--n:clonal.delta_abs_max-->0.05<!--/n--> of the score in every run; the lift's bootstrap interval is above zero in <!--n:clonal.delta_ci_above-->4<!--/n--> runs and
+> wholly below zero in <!--n:clonal.delta_ci_below-->3<!--/n-->.[^clonal]
 
 The two are separate findings and the paper keeps them in separate sentences. Both are about these checks on
 this data. Neither is a claim about trajectory methods in general, about any method's correctness, or about
@@ -26,14 +26,15 @@ the biology of CAR-T cells.
     = 27 of 30 scored (6 of 36 control runs left out because the method raised); the four-point tree defect
     is under `structure` (trees 0.099-0.168; blob 0.293-0.327, two_groups 0.280-0.387, sheet 0.280-0.297,
     loop 0.540-0.581). The verification recorded on 2026-11-17
-    (`benchmarks/results/verdict-verification-2026-11-17.json`, lumenCell_V2 commit `37197c8`) gave 28 of 31.
-    That record does not reproduce exactly even at its own commit: rerun there with today's libraries, 69 of
-    72 records match and the count is 31 of 34, because three `two_groups` scfates_ppt runs that raised
+    (`benchmarks/results/verdict-verification-2026-11-17.json`, lumenCell_V2 commit `37197c8`) gave <!--n:verdict.recorded-->28 of 31<!--/n-->.
+    That record does not reproduce exactly even at its own commit: rerun there with today's libraries, <!--n:verdict.r1_match-->69 of
+    72<!--/n--> records match and the count is <!--n:verdict.r1-->31 of 34<!--/n-->, because three `two_groups` scfates_ppt runs that raised
     `IndexError` now complete (`reproduce_at_37197c8`). Which library changed was not found.
 
 [^clonal]: `benchmarks/results/diagnosis-clonal-2026-11-23.json`, `sheih_bootstrap` (clone bootstrap, 500
-    replicates, 95% percentile intervals). Ratio intervals: NHL-7 palantir 0.439 [0.179, 0.625], NHL-7
-    scfates_ppt 0.491 [0.245, 0.770]. Lift (Δη) point values -0.050 to +0.049; intervals above zero: CLL-1
+    replicates, 95% percentile intervals). Ratio intervals: NHL-7 palantir <!--n:clonal.NHL-7/palantir.R-->0.439 [0.179, 0.625]<!--/n-->, NHL-7
+    scfates_ppt <!--n:clonal.NHL-7/scfates_ppt.R-->0.491 [0.245, 0.770]<!--/n-->. The diagnosis page rounds the first upper bound
+    to 0.62; it is 0.6253, so two decimals give 0.63, and this page gives three. Lift (Δη) point values -0.050 to +0.049; intervals above zero: CLL-1
     paga_dpt, CLL-2 paga_dpt, NHL-7 paga_dpt, NHL-7 scfates_ppt; wholly below: CLL-1 palantir, NHL-6 palantir,
     NHL-6 scfates_ppt. The intervals do not cover the method run, the k-means partition, or which patients
     were sampled.
@@ -42,7 +43,7 @@ the biology of CAR-T cells.
 
 - **The failure is the rule.** The recorded verdicts equal a re-derivation from the rule text in 67 of 67 cases
   (no bug). Adding the three criteria the rule left out, at bars taken from the tree datasets (their 10%
-  quantile), 2 of the 31 recorded controls pass all four (4 of 31 at the tree minimum).[^combos] This count is
+  quantile), <!--n:verdict.all_four_q10-->2 of 31<!--/n--> recorded controls pass all four (<!--n:verdict.all_four_min-->4 of 31<!--/n--> at the tree minimum).[^combos] This count is
   on the 31 recorded controls, not on the 30 of lumencell 0.5.0.
 - **What follows from the failure.** A "supported" verdict from this rule means "connected", nothing more. The
   tool therefore never shows "supported" on real data; it caps it at "not shown to be a tree".
