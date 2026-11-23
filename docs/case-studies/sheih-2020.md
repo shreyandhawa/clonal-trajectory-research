@@ -64,7 +64,7 @@ says which came first, and nothing here claims an order from it.
 Everything below was declared in
 [`[case_study.sheih2020]` of `benchmarks/thresholds.toml`](../../benchmarks/thresholds.toml), with
 a dated changelog entry (2026-11-19), and merged in PR #51 as commit
-[5ef3151](https://github.com/shreyandhawa/lumenCell_V2/commit/5ef31511db66c143abe8217be25887d903be8ee3)
+[5ef3151](https://github.com/shreyandhawa/lumencell-app/commit/5ef31511db66c143abe8217be25887d903be8ee3)
 before the case-study data was built and before any score was computed. It was written from the
 paper and the file headers only.
 

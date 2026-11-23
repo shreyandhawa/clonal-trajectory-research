@@ -1,7 +1,7 @@
 # clonal-trajectory-research
 
 Real-data benchmarks, calibration studies and case studies behind the trust claims of
-[lumencell](https://github.com/shreyandhawa/lumenCell_V2), an interactive explorer for
+[lumencell](https://github.com/shreyandhawa/lumencell-app), an interactive explorer for
 single-cell pseudotime and lineage trajectories.
 
 lumencell is the tool. This repo is the evidence: how well trajectory methods and the clonal

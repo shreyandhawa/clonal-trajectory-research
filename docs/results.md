@@ -6,7 +6,7 @@ The case study is on Sheih et al. 2020, a study of CAR-T cells in four patients.
 ## What was declared before the data
 
 The analysis plan was written down before any real data were scored. It was merged in
-[PR #51](https://github.com/shreyandhawa/lumenCell_V2/pull/51), at commit 5ef3151.
+[PR #51](https://github.com/shreyandhawa/lumencell-app/pull/51), at commit 5ef3151.
 The plan was written from the paper and the file headers only.
 
 - A clone is a set of cells that share the same paired T-cell receptor chains.
