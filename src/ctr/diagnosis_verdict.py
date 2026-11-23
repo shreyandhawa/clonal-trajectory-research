@@ -322,9 +322,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         payload = structure_runs(cfg, range(6), cfg["tree_support"]["calibration"]["methods"], args.workdir)
     else:  # reproduce: R1/R2 (which lumencell is imported is decided by PYTHONPATH)
         import lumencell
-        from lumencell.engine.tree_support import calibrated_thresholds
 
-        from ctr.verdict_calibration import collect_records, verify
+        from ctr.verdict_calibration import collect_records
 
         v = cfg["tree_support"]["verification"]
         recs = collect_records(
@@ -333,12 +332,20 @@ def main(argv: Sequence[str] | None = None) -> int:
             cfg["tree_support"]["calibration"]["methods"],
             args.workdir,
         )
-        out = verify(recs, calibrated_thresholds(), int(v["max_controls_supported"]))
+        # hand_verdict, not verify(): 37197c8's verdict() has no `verified` argument (F14 added it).
+        taus = {k: cfg["tree_support"]["calibrated"].get(k) for k in ("tau_tree", "tau_lin", "tau_pt")}
+        cov_min = float(cfg["tree_support"]["coverage_min"])
+        supported = [
+            f"{r.dataset} {r.method}"
+            for r in recs
+            if r.error is None and r.group == "control" and hand_verdict(r, taus, cov_min) == "supported"
+        ]
         payload = {
             "lumencell_file": lumencell.__file__,
-            "controls_supported": list(out.controls_supported),
-            "n_controls_supported": len(out.controls_supported),
-            "n_failed": out.n_failed,
+            "controls_supported": supported,
+            "n_controls_supported": len(supported),
+            "n_controls_scored": sum(r.error is None and r.group == "control" for r in recs),
+            "n_failed": sum(r.error is not None for r in recs),
             "records": [r.__dict__ for r in recs],
             "differences": record_differences(ver, recs),
         }
