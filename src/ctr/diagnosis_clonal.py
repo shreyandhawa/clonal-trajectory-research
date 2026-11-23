@@ -149,7 +149,8 @@ def decide(summary: Mapping[str, Any], mode: str = "oracle") -> dict[str, Any]:
     bound, cells = summary["bound"], summary["cells"]
 
     def get(sigma: float, arm: str) -> Mapping[str, Any]:
-        return cells[f"{mode}/{sigma}/{arm}"]
+        cell: Mapping[str, Any] = cells[f"{mode}/{sigma}/{arm}"]
+        return cell
 
     per_sigma: dict[str, Any] = {}
     for sigma in sorted({float(k.split("/")[1]) for k in cells if k.startswith(mode + "/")}):
