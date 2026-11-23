@@ -28,5 +28,7 @@ uv run ctr report        # tables from the latest results
 uv run pytest -m "not real_data"
 ```
 
-Needs lumencell with the research modules removed (0.5.0). Until then `pyproject.toml` points at
-a sibling checkout (`../lumenCell_V2`).
+Needs lumencell with the research modules removed (0.5.0). Until that is on PyPI,
+`pyproject.toml` installs lumencell from the `main` branch of its GitHub repo, so `uv sync` works
+on any machine with network access. To build against a local checkout of the tool instead, run
+`uv pip install -e ../lumenCell_V2` after `uv sync`.

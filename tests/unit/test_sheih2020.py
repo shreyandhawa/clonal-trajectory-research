@@ -345,17 +345,18 @@ def test_build_dataset_writes_the_derived_file_by_atomic_rename(
 def test_bench_fetch_finds_a_case_study_by_its_id_but_all_skips_it(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from lumencell.cli import app
     from typer.testing import CliRunner
 
+    from ctr.cli import app
+
     monkeypatch.setenv("LUMENCELL_DATASETS_DIR", str(tmp_path))
-    out = CliRunner().invoke(app, ["bench", "fetch", "sheih2020"], input="n\n")
+    out = CliRunner().invoke(app, ["fetch", "sheih2020"], input="n\n")
     assert out.exit_code == 0 and "skipped" in out.output, out.output
     assert all(s.url in out.output for s in CASE_STUDIES["sheih2020"].sources)
     assert not list(tmp_path.iterdir())
-    everything = CliRunner().invoke(app, ["bench", "fetch", "all"], input="n\n" * 4)
+    everything = CliRunner().invoke(app, ["fetch", "all"], input="n\n" * 4)
     assert "sheih2020" not in everything.output
-    assert CliRunner().invoke(app, ["bench", "fetch", "nope"]).exit_code == 2
+    assert CliRunner().invoke(app, ["fetch", "nope"]).exit_code == 2
 
 
 # --- pinned sample table, written by hand from Task 9's GSM table (docs/superpowers/research) ---

@@ -25,9 +25,9 @@ ctr = "ctr.cli:app"
 dev = ["pytest>=8.3", "hypothesis>=6.120", "ruff>=0.9", "mypy>=1.15"]
 
 # lumencell without its research modules is not on PyPI yet (0.4.0 still bundles them). Until
-# 0.5.0 ships, build against a sibling checkout of the tool.
+# 0.5.0 ships, build against the tool's main branch.
 [tool.uv.sources]
-lumencell = { path = "../lumenCell_V2", editable = true }
+lumencell = { git = "https://github.com/shreyandhawa/lumenCell_V2", branch = "main" }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ctr"]
