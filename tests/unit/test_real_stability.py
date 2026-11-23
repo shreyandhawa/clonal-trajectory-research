@@ -2,6 +2,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
+import click
 import pytest
 from lumencell.bench.runner import CaseResult, StabilityRow
 from typer.testing import CliRunner
@@ -11,7 +12,8 @@ from ctr.cli import app
 
 
 def test_bench_real_has_a_stability_switch() -> None:
-    out = CliRunner().invoke(app, ["real", "--help"]).output
+    # Rich colours help under CI (GITHUB_ACTIONS), which splits option names with escape codes.
+    out = click.unstyle(CliRunner().invoke(app, ["real", "--help"]).output)
     assert "--no-stability" in out
 
 
