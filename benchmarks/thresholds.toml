@@ -1,38 +1,12 @@
-# Accuracy gates for trajectory methods.
+# Research declarations: real-data gates, case studies, and the calibration and verification
+# runs behind lumencell's clonal and tree-support claims.
 #
-# A method that misses any gate on any case ships labelled "experimental", with
-# its measured scores shown in the UI. Thresholds are never lowered to make a
-# method pass; every change to a threshold or to a metric's definition is logged
-# below with the reason.
-
-[synthetic]
-preset = "realistic"
-topologies = ["linear", "bifurcation", "trifurcation", "binary2"]
-seeds = [0, 1, 2]
-n_cells = 3000
-n_genes = 2000
-
-[synthetic.gates]
-pt_spearman_global = { min = 0.90 }
-pt_spearman_lineage = { min = 0.85 }
-branch_accuracy = { min = 0.90 }  # NaN (single-lineage topologies) is skipped
-lineage_recall = { min = 1.0 }
-n_spurious = { max = 1 }
-root_pt_excess = { max = 0.10 }
-clonal_excess_ratio = { min = 0.5, nan = "fail", status = "clonal_status" }  # see [clonal]
-clonal_p = { max = 0.01, nan = "fail", status = "clonal_status" }
-
-[synthetic.controls]
-# Negative controls for the tree verdict (spec §5.3), built directly by bench/synth_controls.py,
-# never by the tree generator. Outside the gated matrix: no gate, baseline, regression check or
-# experimental flag reads this table. Counts use the [synthetic] preset's noise model.
-kinds = ["blob", "two_groups", "loop", "sheet"]
-n_cells = 3000
-n_genes = 2000
-programme_share = 0.10       # share of genes driven by each latent coordinate (two_groups, sheet)
-loop_programme_share = 0.20  # loop: genes following the cycle
-lfc_scale = 1.0              # median |log fold change| of a programme gene (as the preset's de_scale)
-group_lfc_scale = 2.0        # two_groups: far enough apart to be unconnected in the kNN graph
+# ctr.gates deep-merges this file over the thresholds.toml that lumencell ships
+# (lumencell/bench/policy), so the synthetic gates, the [clonal] and [tree_support] definitions
+# and the regression rule come from the installed tool. A key set here wins. Thresholds are never
+# lowered to make a method pass; every change is logged below with the reason. The tool-only
+# changelog entries (2026-11-10 initial gates and metric definitions, 2026-11-12 clonal
+# agreement) are in lumencell's file.
 
 # Real datasets: a release gate (make bench-real), never run in CI. Set from the
 # approved M1 plan and written down before the first real run (2026-11-10).
@@ -73,88 +47,6 @@ raw_clonotype_ari = "adjusted Rand index between clone_id and 10x raw_clonotype_
 labelled_share_of_raw = "cells with a clone_id divided by cells with a raw_clonotype_id"
 trb_only = "the clonal block again with clone_id_trb (1 or 2 qualifying TRB, sorted TRB CDR3 nt set): same mode, nulls and floor"
 
-# ---- clonal agreement (spec docs/superpowers/specs/2026-11-12-tcell-clonotypes-design.md §4.3-4.5)
-# Defined before any clonal score was computed. src/lumencell/trust/constants.py mirrors what the
-# worker needs at run time; tests/unit/test_trust_constants.py keeps the two equal.
-# Clone: the pair (donor, label). A missing, empty, "nan" or "None" label means no receptor.
-# Scored cells: single-lineage cells with a label whose clone has >= m such cells.
-#   own-cells mode (API): the run's single-lineage cells, counted in their lineage.
-#   oracle-cells mode (gates): the true lineages' single-lineage cells, weighted by the method's
-#   masks: one lineage 1, k lineages 1/k each, none 1/L each (L = the method's lineages).
-# H_k = -sum_l p_kl log p_kl / log L; H = sum_k n_k H_k / sum_k n_k; purity P = 1 - H.
-# Clone-weighted purity = 1 - (1/K) sum_k H_k: every clone weighted equally (spec §4.3).
-# Purity without the largest clone leaves out the clone with the most scored cells; on a size
-#   tie, the purer one (lower H_k) is left out; NaN with one clone.
-# eta = 1 - H_obs / E_null[H], reported against each null; headline eta is against N1.
-# Nulls shuffle clone identities among the scored cells, B times, seeded, within:
-#   N1 donor; N2 donor x decile of pseudotime (the run's own; the truth's order for the oracle;
-#   cells without pseudotime form their own stratum), and from metric_version 2 x lineage-onset
-#   segment (the N2a amendment below); N3 donor x strata_keys, when declared.
-# N2 deciles are taken over the scored cells' finite pseudotime by average rank:
-#   decile = min(bins - 1, floor(bins * (average rank - 1) / n_finite)); cells with NaN
-#   pseudotime form a bin of their own.
-# p = (1 + #{H_b <= H_obs}) / (B + 1), one-sided; headline p = the largest over computed nulls.
-# Lineage-free baseline: scipy.cluster.vq.kmeans2 with k = L, seeded, on the PCs the kNN graph
-#   uses, scored on the same cells: eta_base, delta_eta = eta - eta_base, and a paired
-#   permutation p for delta_eta over the same N1 shuffles.
-# Coupling (reported, never gated): cosine similarity of the raw scored-cell count columns of
-#   each lineage pair, against N1: z, p and Benjamini-Hochberg p_adj. Not CoSpar's normalised
-#   default. It says two lineages share clones, never which came first.
-# Every score also reports cells and clones scored, the effective clone count (inverse Simpson
-#   index of scored mass, 1 / sum_k (n_k / N)^2) and the same block at m = 3.
-# Sources: STARTRAC, Zhang et al., Nature 2018, doi:10.1038/s41586-018-0694-x (purity);
-#   LRT, Xie et al., PLoS Comput Biol 2023, doi:10.1371/journal.pcbi.1011300 (lineage bias);
-#   CoSpar, Wang et al., Nat Biotechnol 2022, doi:10.1038/s41587-022-01209-1 (coupling);
-#   Vinh, Epps & Bailey, JMLR 11(95):2837-2854, 2010, jmlr.org/papers/v11/vinh10a.html, no DOI,
-#   checked 2026-11-12 (chance-corrected eta);
-#   Phipson & Smyth, Stat Appl Genet Mol Biol 9(1), 2010, doi:10.2202/1544-6115.1585, checked
-#   2026-11-12 (p never zero);
-#   Sturm et al., Bioinformatics 36(18):4817-4818, 2020, doi:10.1093/bioinformatics/btaa611, and
-#   Schattgen et al., Nat Biotechnol 40:54-63, 2022, doi:10.1038/s41587-021-00989-2, both checked
-#   2026-11-12 (clones are transcriptionally coherent, hence the lineage-free baseline).
-[clonal]
-metric_version = 2           # 2 since 2026-11-17: N2 with the lineage-onset split (N2a, adopted)
-min_clone_size = 2          # primary m; single-cell clones never contribute
-sensitivity_clone_size = 3  # always reported alongside
-min_clones = 20             # fewer scored clones: too_few_clones, values reported, never a pass
-n_permutations = 1000       # B per null
-seed = 0
-pseudotime_bins = 10
-p_max = 0.01                # the clonal_p gate, and phase 2's C5
-# 2026-11-17  N2 amendment (N2a), declared before any run that measures it. Adopted only by the
-#   rule below; until then the runtime N2 is the decile definition above (metric_version 1).
-#   Definition: for each lineage, its onset is the smallest finite pseudotime among the scored
-#   cells whose whole weight (1) is on that lineage; a lineage with no such cell adds no cut.
-#   N2's strata become donor x decile x segment, where segment = the number of onsets <= the
-#   cell's pseudotime. Deciles are unchanged. Cells without a finite pseudotime keep their own
-#   stratum (per donor). Near-equal onsets are not merged. The strata use only lineage weights
-#   and pseudotime, never clone labels, so the shuffle stays a valid null. The same rule in
-#   own-cells and oracle-cells modes, from the membership and pseudotime each call already
-#   passes. N2 is redefined in place: N3's RNG stream and the null names do not move.
-#   Reasons: phase 1's depth_only/N2 failed (57/200, bound 18). Diagnosis (Task 8): binary2's
-#   lineage mix steps at t = 0.65 inside one decile, so the within-decile shuffle mixes pure-B
-#   clones with mixed-region cells and the null entropy is too high. A cut at each lineage's
-#   onset targets that mechanism. Finer bins were rejected: they only shrink the step inside a
-#   bin and cost power on every run.
-#   Calibration: [clonal.calibration_n2_amended], fresh seeds 300-499, the phase 1 check set,
-#   alpha, bound rule and NaN rule, recorded in a new results file.
-#   Result (2026-11-17, at 2b15c77): every check passed, so the amendment is adopted and
-#   metric_version is 2 (see the changelog).
-#   Adoption rule, fixed now: if every check passes (report passed), the amended N2 becomes the
-#   runtime N2 and metric_version goes from 1 to 2 (trust_hash changes, stored clonal scores are
-#   re-scored). If any check fails, it is recorded as failed and the runtime stays on version 1.
-#   No seed, bound or definition is changed after the run.
-
-[clonal.synthetic]
-fate_bias = 0.7             # every branching matrix case gets this clonal layer
-n_donors = 3
-label_rate = 0.85           # share of cells with a receptor, near 10x capture rates
-singleton_share = 0.5       # clone size: 1 with this probability, else 1 + Zipf(zipf_a)
-zipf_a = 2.2
-donor_confound_share = 0.8  # donor-confound control: share of lineage j's cells in donor j mod D
-oracle_eta_min = 0.05       # below either oracle floor the case is not_assessable (and fails)
-oracle_p_max = 0.01
-
 [clonal.calibration]
 # Slow, run once and recorded (tests/clonal/test_calibration.py), at the [synthetic] preset and
 # size. Seeds are disjoint from the gated matrix. Seed s uses topologies[(s - seed_start) % 3].
@@ -177,7 +69,7 @@ monotonic_topologies = ["bifurcation", "trifurcation", "binary2"]
 #   or threshold is changed after the run; a failed check is recorded as a failure.
 
 [clonal.calibration_n2_amended]
-# 2026-11-17  The N2 amendment's calibration (see [clonal] above): the same checks, alpha, bound
+# 2026-11-17  The N2 amendment's calibration (see [clonal] in lumencell's policy file): the same checks, alpha, bound
 #   rule and NaN rule as [clonal.calibration], on fresh seeds clear of 0-5 and 100-299. Seed s
 #   uses topologies[(s - seed_start) % 3]. Every null p, and so the headline p, uses the amended N2.
 seed_start = 300
@@ -189,54 +81,6 @@ binomial_quantile = 0.99          # 18 rejections at most when all 200 seeds sco
 monotonic_fate_bias = [0.0, 0.35, 0.7, 1.0]
 monotonic_seeds = [0, 1, 2]
 monotonic_topologies = ["bifurcation", "trifurcation", "binary2"]
-
-# ---- T-cell robustness (spec docs/superpowers/specs/2026-11-12-tcell-clonotypes-design.md §5)
-# Defined before any cell-cycle score, stability replicate or verdict value was computed.
-# src/lumencell/trust/constants.py mirrors what the worker and server need at run time.
-
-[cell_cycle]
-# Report-only prep stage, left out of prep_key: scanpy score_genes_cell_cycle on the
-# log-normalised matrix with the Tirosh et al. 2016 S and G2M lists (mouse through the shipped
-# human-to-mouse ortholog table). Species "auto" goes by the case of the matching symbols.
-gene_set = "tirosh2016"
-min_genes = 20            # fewer list genes found (S and G2M together), or none in one list: not_scored
-seed = 0                  # score_genes random_state
-# Per-run check, a hint and never a verdict (proliferating effector cells are real biology): a
-# lineage is flagged when the share of its single-lineage cells in S or G2M is at least
-# lineage_ratio_min times the share of all scored cells, and at least lineage_share_min.
-lineage_ratio_min = 2.0
-lineage_share_min = 0.5
-
-[stability]
-metric_version = 1
-n_reseeds = 2             # Leiden, PAGA and the method rerun on all cells with new seeds
-n_subsamples = 3          # subsample_fraction of cells, uniform, the root cell always kept; kNN,
-subsample_fraction = 0.8  #   Leiden, diffusion maps and PAGA recomputed; normalisation, HVG, PCA reused
-seed = 0
-# Reseed i (from 0) uses prep seed + 1 + i for Leiden and PAGA and, when the method has a seed
-# parameter, the method's seed + 1 + i. Subsample j draws its cells with numpy
-# default_rng(seed + 1 + j) and keeps the reference's prep and method seeds. Every replicate is
-# rooted at cell:<obs name> of the reference run's root cell. Terminals named in the Leiden column
-# map to the replicate's Leiden cluster with the largest overlap; other terminals pass unchanged.
-# Per replicate, against the reference, on the cells both contain (subsamples padded to all cells):
-#   spearman of pseudotime over cells finite in both; lineages paired by the Hungarian algorithm
-#   on Jaccard over shared cells; share_matched = pairs with Jaccard >= match_jaccard / reference
-#   lineages; mean_jaccard = mean Jaccard of the pairs; n_lineages of the replicate.
-# A replicate that fails, or whose value is undefined, counts as 0 in every median and minimum.
-match_jaccard = 0.6
-
-[tree_support]
-# C1 connectivity: share of cells with finite pseudotime >= coverage_min.
-# C2 tree-likeness (dataset level): weight of PAGA's maximum spanning tree / total PAGA edge
-#   weight, each edge once (upper triangle) >= tau_tree. No edges: undefined, which fails.
-# C3 lineage stability: median over all R replicates of share_matched >= tau_lin.
-# C4 pseudotime stability: median over all R replicates of spearman >= tau_pt.
-# C5 clonal support (clones configured, L >= 2): status ok, headline p <= clonal.p_max, delta_eta > 0.
-# Level: not_supported if C1 or C2 fails; provisional while C1 or C2 is unknown; weak if an
-#   applicable check among C3-C5 fails (a failed clonal score fails C5); provisional while one of
-#   them is pending or stability could not be measured; supported otherwise. A non-discriminating
-#   check is left out and the verdict says so.
-coverage_min = 0.95
 
 [tree_support.calibration]
 # tau = (quantile(matrix values, matrix_quantile) + quantile(control values, control_quantile)) / 2,
@@ -262,19 +106,6 @@ control_seeds = [3, 4, 5]
 max_controls_supported = 0
 # If verification fails, every served verdict is capped at provisional, with a note naming the failed verification. Declared 2026-11-17, before any verdict was computed.
 on_failure = "provisional"
-
-[tree_support.calibrated]
-# Derived by the [tree_support.calibration] rule from benchmarks/results/verdict-calibration-2026-11-17.json
-# (run at 0a584d5). A non-discriminating check has no tau key and is left out of the verdict.
-non_discriminating = ["C2", "C3", "C4"]
-
-[tree_support.verified]
-# The recorded outcome of [tree_support.verification], written after the run. passed = false: 28 of
-# 31 control runs were verdicted supported (max 0), so every served verdict that would read
-# supported is capped at provisional (weak is served as is, H-1 2026-11-19), with a note naming this verification and its date.
-passed = false
-date = "2026-11-17"
-source = "benchmarks/results/verdict-verification-2026-11-17.json"
 
 # ---- case study (spec docs/superpowers/specs/2026-11-12-tcell-clonotypes-design.md §6.2)
 # Declared before any analysis, from the paper and the file headers only (Task 9's note,
@@ -302,46 +133,12 @@ pooled_diagnostic = true       # one pooled run per method, reported only as a l
 # would then call a batch artefact "no tree". Cost: 12 runs with stability instead of 3, and about a
 # quarter of the cells in each run.
 
-[regression]
-# CI fails if a synthetic metric falls further than this below benchmarks/baseline.json.
-max_drop = 0.03
-
 # ---- changelog ---------------------------------------------------------------------
-#
-# 2026-11-10  Initial gates, set before any method was measured.
-#
-# 2026-11-10  Two metric definitions corrected after the first paga_dpt run.
-#             Thresholds unchanged.
-#   * root_pt_median -> root_pt_excess. The true root population (first half of
-#     the trunk) spans true pseudotime 0-0.2, so even perfect inference gives a
-#     median near 0.10 and the original gate (<= 0.10) was unpassable by design.
-#     The gate now applies to the excess over the true median.
-#   * branch_accuracy and lineage matching now count only cells at least 0.15
-#     (true pseudotime) past their fork. The generator ramps branch expression in
-#     from zero at a fork, so earlier cells are indistinguishable for any method;
-#     the realistic preset's calibration measures branch purity on the same region.
-#     The all-cells figure is still reported as branch_accuracy_all.
-#     Side effect, stated openly: a lineage that wrongly runs through a sibling
-#     branch's cluster can now reach the 0.6 Jaccard needed to count as "found"
-#     (paga_dpt, trifurcation seeds 0-1). That error still fails the
-#     branch_accuracy gate, which counts the misplaced cells.
 #
 # 2026-11-10  Real-dataset gates added, before any method was run on real data.
 #   The plan's "share of Erythroid3 cells on the main lineage" is implemented as
 #   terminal_share (worst expected lineage's terminal-stage cells held by one
 #   inferred lineage).
-#
-# 2026-11-12  Clonal agreement: definitions above and two synthetic gates, set before any
-#   clonal score was computed. clonal_excess_ratio = eta_method / eta_oracle >= 0.5: a method
-#   whose lineages capture less than half of the chance-corrected clonal signal of the true
-#   lineages is not separating the fates the clones show. clonal_p <= 0.01: with B = 1000 the
-#   smallest p is about 0.001 and its Monte Carlo error at the boundary about 0.003. A case is
-#   assessable only if the oracle has eta >= 0.05 and headline p <= 0.01. These two gates fail
-#   on NaN and on every status but ok (too_few_clones, failed, not_assessable, single_lineage,
-#   not_measured), except not_applicable (fewer than 2 true lineages, or a real dataset with
-#   no clone data); a synthetic branching truth with no clone data is not_measured and fails.
-#   Every other gate still skips NaN. The clonal gate is not a branch gate: merging two true
-#   lineages can push the ratio above 1, and lineage_recall catches that.
 #
 # 2026-11-13  Calibration run, results in benchmarks/results/clonal-calibration-2026-11-13.json
 #   (200 seeds, bound 18, no NaN p-values, no method error): null/paga_dpt 6, null/palantir 7,

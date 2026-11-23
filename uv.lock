@@ -196,7 +196,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "lumencell", extras = ["all"], git = "https://github.com/shreyandhawa/lumenCell_V2?branch=main" },
+    { name = "lumencell", extras = ["all"], specifier = ">=0.5,<0.6" },
     { name = "numpy", specifier = ">=2.0" },
     { name = "pandas", specifier = ">=2.2" },
     { name = "scipy", specifier = ">=1.13" },
@@ -1035,8 +1035,8 @@ wheels = [
 
 [[package]]
 name = "lumencell"
-version = "0.4.0"
-source = { git = "https://github.com/shreyandhawa/lumenCell_V2?branch=main#3d597af6253a8f1a35c9310fc89a697f3022a257" }
+version = "0.5.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anndata" },
     { name = "certifi" },
@@ -1051,6 +1051,10 @@ dependencies = [
     { name = "scipy" },
     { name = "typer" },
     { name = "uvicorn" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c7/f5/db451e8b8e6fa35a7d0ac1dfb52fa0fadff41249b3e16a245bad543b64f8/lumencell-0.5.0.tar.gz", hash = "sha256:232d86af13cd1c73b93ff31aae6a0c912261f2382c87a8c059a93ccf3829fc9e", size = 4322588, upload-time = "2026-11-23T15:01:35.501Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/70/aa/aa1449bf9c402892b687f73ea96daec09c405b43a434b46a55494d5dae12/lumencell-0.5.0-py3-none-any.whl", hash = "sha256:f8a505bb358fb017bbcf210c4e46d84cce511c528c40bbf5e1ad3a0cfa69bc1a", size = 2131831, upload-time = "2026-11-23T15:01:33.763Z" },
 ]
 
 [package.optional-dependencies]

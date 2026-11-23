@@ -13,7 +13,7 @@ written case studies. History for the moved files was kept from the original rep
 | Path | What |
 |---|---|
 | `src/ctr/` | Dataset registry, downloads and builders, real-data runner, calibration, report |
-| `benchmarks/thresholds.toml` | Gates declared before each analysis (a frozen copy of lumencell 0.4.0's, extended here) |
+| `benchmarks/thresholds.toml` | What the research declared before each analysis: real-data gates, case studies, calibration and verification. Merged over the thresholds lumencell ships |
 | `benchmarks/results/` | Result JSON per run |
 | `docs/results.md`, `docs/benchmarks.md`, `docs/case-studies/` | Write-ups and generated tables |
 | `docs/HANDOFF.md` | Project record from before the split |
@@ -28,7 +28,5 @@ uv run ctr report        # tables from the latest results
 uv run pytest -m "not real_data"
 ```
 
-Needs lumencell with the research modules removed (0.5.0). Until that is on PyPI,
-`pyproject.toml` installs lumencell from the `main` branch of its GitHub repo, so `uv sync` works
-on any machine with network access. To build against a local checkout of the tool instead, run
-`uv pip install -e ../lumenCell_V2` after `uv sync`.
+Needs lumencell 0.5 from PyPI. The synthetic gates and the baseline come from the installed
+lumencell (`lumencell/bench/policy`).
