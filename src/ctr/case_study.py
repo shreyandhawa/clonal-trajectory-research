@@ -28,10 +28,8 @@ from typing import Any
 
 import anndata as ad
 import numpy as np
-
 from lumencell import __version__
 from lumencell.api.models import ClonalSettings
-from lumencell.bench.gates import load_thresholds
 from lumencell.clonal.labels import is_missing
 from lumencell.data.loader import load
 from lumencell.engine.context import InferenceContext
@@ -52,6 +50,8 @@ from lumencell.trust.cell_cycle import cell_cycle_check
 from lumencell.trust.clonal import agreement_for_run, check_settings, settings_columns
 from lumencell.trust.stability import not_measured, safe_text, to_api_stability
 from lumencell.trust.verdict import clonal_evidence, stability_evidence, to_api_tree_support
+
+from ctr.gates import load_thresholds
 
 TREE_LIKENESS_NOTE = "no PAGA edges, so tree-likeness is undefined and C2 fails"
 PER_UNIT = "Per patient (primary)"

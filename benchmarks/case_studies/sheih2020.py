@@ -2,7 +2,7 @@
 
 Wiring only: the declaration is [case_study.sheih2020] in benchmarks/thresholds.toml, the data is the
 derived file `lumencell bench fetch sheih2020` builds, and every number comes from
-lumencell.bench.case_study. Takes about 15 minutes on the development machine (4 patients x 3
+ctr.case_study. Takes about 15 minutes on the development machine (4 patients x 3
 methods with stability on each, then the pooled run; the 2026-11-20 run took 14).
 Run as: uv run python -I benchmarks/case_studies/sheih2020.py [--out PATH] [--workdir DIR]
 """
@@ -14,10 +14,10 @@ import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 
-from lumencell.bench.case_study import failed_methods, load_declaration, run_units, write_report
-from lumencell.bench.datasets import CASE_STUDIES
-from lumencell.bench.download import is_cached, local_path
-from lumencell.bench.gates import REPO
+from ctr.case_study import failed_methods, load_declaration, run_units, write_report
+from ctr.datasets import CASE_STUDIES
+from ctr.download import is_cached, local_path
+from ctr.gates import REPO
 
 
 def main() -> int:

@@ -10,10 +10,12 @@ import anndata as ad
 import numpy as np
 import pandas as pd
 import pytest
+from lumencell.bench.metrics import score
+from lumencell.trust.constants import ORACLE_ETA_MIN, ORACLE_P_MAX
 
-from lumencell.bench import download as dl
-from lumencell.bench.builders import daniel2022
-from lumencell.bench.datasets import (
+from ctr import download as dl
+from ctr.builders import daniel2022
+from ctr.datasets import (
     DATASETS,
     FetchError,
     RealDataset,
@@ -22,10 +24,8 @@ from lumencell.bench.datasets import (
     local_path,
     truth_for,
 )
-from lumencell.bench.download import Build, Source, build_dataset, fetch_source, source_path
-from lumencell.bench.gates import load_thresholds
-from lumencell.bench.metrics import score
-from lumencell.trust.constants import ORACLE_ETA_MIN, ORACLE_P_MAX
+from ctr.download import Build, Source, build_dataset, fetch_source, source_path
+from ctr.gates import load_thresholds
 
 CHRONIC = "LCMV-c13"
 
@@ -187,7 +187,7 @@ def test_a_numeric_time_column_is_read_as_the_number_it_holds() -> None:
 
 
 def test_a_whitespace_padded_numeric_time_reads_as_the_number() -> None:
-    from lumencell.bench.datasets import _time_value
+    from ctr.datasets import _time_value
 
     assert _time_value(" 1e-05 ") == 1e-05
 
@@ -434,7 +434,7 @@ def test_build_dataset_names_a_source_that_is_not_downloaded(two_file: TwoFile) 
 
 
 def test_is_downloaded_rejects_a_wrong_size_and_fetch_downloads_again(two_file: TwoFile) -> None:
-    from lumencell.bench.download import is_downloaded
+    from ctr.download import is_downloaded
 
     src = two_file.ds.sources[0]
     source_path(src).write_bytes(b"x" * (src.size + 3))
@@ -548,7 +548,7 @@ def test_the_daniel_declaration_is_pinned() -> None:
 
 
 def daniel_clonal() -> Any:
-    from lumencell.bench.datasets import RealClonal
+    from ctr.datasets import RealClonal
 
     return RealClonal(
         "clone_id", "donor", "clone_id_trb", "raw_clonotype_id", "capture", False, DANIEL_REASON, "2026-11-20"
@@ -587,7 +587,7 @@ def test_real_clonal_is_frozen_and_names_its_scoring_only_columns() -> None:
 
 
 def test_two_gated_lineages_make_an_assessable_declaration_valid() -> None:
-    from lumencell.bench.datasets import RealClonal
+    from ctr.datasets import RealClonal
 
     clonal = RealClonal("c", "d", "t", "r", "cap", True, "ok", "2026-01-02")
     two = _REAL_FIELDS | {
@@ -603,7 +603,7 @@ def test_two_gated_lineages_make_an_assessable_declaration_valid() -> None:
 
 def test_daniel_base_gates_score_nan_and_are_skipped_without_a_gated_lineage() -> None:
     """Documents the gap Task 7 closes: with no gated lineage the three base gates measure nothing."""
-    from lumencell.bench.gates import check_gates
+    from ctr.gates import check_gates
 
     ds = DATASETS["daniel2022"]
     obs = pd.DataFrame({ds.label_key: [ds.root_label] * 5 + ["TEx"] * 5 + ["TEx_int"] * 5})
@@ -615,7 +615,7 @@ def test_daniel_base_gates_score_nan_and_are_skipped_without_a_gated_lineage() -
 
 
 def test_the_gated_count_is_of_distinct_names_present_in_lineages() -> None:
-    from lumencell.bench.datasets import RealClonal
+    from ctr.datasets import RealClonal
 
     clonal = RealClonal("c", "d", "t", "r", "cap", True, "ok", "2026-01-02")
     base = _REAL_FIELDS | {
@@ -630,7 +630,7 @@ def test_the_gated_count_is_of_distinct_names_present_in_lineages() -> None:
 
 
 def test_the_daniel_changelog_entry_is_dated_and_matches_the_registry() -> None:
-    from lumencell.bench.gates import THRESHOLDS
+    from ctr.gates import THRESHOLDS
 
     text, ds = THRESHOLDS.read_text(), DATASETS["daniel2022"]
     date_ = ds.clonal.declared  # type: ignore[union-attr]

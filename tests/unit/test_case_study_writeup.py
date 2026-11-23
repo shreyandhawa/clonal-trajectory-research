@@ -6,9 +6,10 @@ leads with the per-patient runs.
 import json
 import re
 
-from lumencell.bench.case_study import render_markdown
-from lumencell.bench.gates import REPO
 from lumencell.trust.constants import VERDICT_VERIFIED_ON
+
+from ctr.case_study import render_markdown
+from ctr.gates import REPO
 
 DOC, START, END = (
     REPO / "docs/case-studies/sheih-2020.md",

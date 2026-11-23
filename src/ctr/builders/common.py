@@ -13,7 +13,7 @@ import numpy as np
 import numpy.typing as npt
 import pandas as pd
 
-from lumencell.bench.download import SAFE_NAME
+from ctr.download import SAFE_NAME
 
 
 class BuildError(RuntimeError):

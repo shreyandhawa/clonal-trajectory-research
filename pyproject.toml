@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "clonal-trajectory-research"
+version = "0.1.0"
+description = "Real-data benchmarks, calibration and case studies behind lumencell's trajectory and clonal trust claims."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dependencies = [
+    "lumencell[all]",
+    "typer>=0.15",
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "scipy>=1.13",
+]
+
+[project.scripts]
+ctr = "ctr.cli:app"
+
+[dependency-groups]
+dev = ["pytest>=8.3", "hypothesis>=6.120", "ruff>=0.9", "mypy>=1.15"]
+
+# lumencell without its research modules is not on PyPI yet (0.4.0 still bundles them). Until
+# 0.5.0 ships, build against a sibling checkout of the tool.
+[tool.uv.sources]
+lumencell = { path = "../lumenCell_V2", editable = true }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ctr"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "NPY", "RUF"]
+allowed-confusables = ["–", "×"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["ctr"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = ["scanpy.*", "anndata.*", "igraph.*", "skmisc.*", "scipy.*", "pandas.*", "h5py.*", "palantir.*", "scFates.*", "scfates.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "real_data: needs a downloaded real dataset; skipped when it is not cached",
+    "slow: takes more than a few seconds",
+    "golden: synthetic accuracy benchmark with thresholds",
+]
+filterwarnings = [
+    "ignore::pandas.errors.Pandas4Warning:anndata",
+]

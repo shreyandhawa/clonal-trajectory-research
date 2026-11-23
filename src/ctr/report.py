@@ -5,9 +5,10 @@ import math
 from pathlib import Path
 from typing import Any
 
-from lumencell.bench.datasets import DATASETS, lineage_gates_note
-from lumencell.bench.gates import BASELINE, REPO, check_gates, load_thresholds
 from lumencell.trust.constants import VERDICT_VERIFIED
+
+from ctr.datasets import DATASETS, lineage_gates_note
+from ctr.gates import BASELINE, REPO, check_gates, load_thresholds
 
 README = REPO / "docs" / "benchmarks.md"  # the generated tables; the name is kept so the CLI is untouched
 START = "<!-- bench:start -->"

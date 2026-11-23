@@ -8,16 +8,16 @@ import anndata as ad
 import numpy as np
 import pandas as pd
 import pytest
-
-from lumencell.bench import download as dl
-from lumencell.bench.builders import sheih2020
-from lumencell.bench.builders.common import UNSAFE_MEMBER, BuildError
-from lumencell.bench.datasets import CASE_STUDIES, CaseStudyDataset
-from lumencell.bench.download import Build, Source, build_dataset, local_path
-from lumencell.bench.gates import load_thresholds
 from lumencell.clonal.isolation import receptor_gene_mask, scoring_only_columns
 from lumencell.clonal.labels import encode_clones
 from lumencell.data.loader import load
+
+from ctr import download as dl
+from ctr.builders import sheih2020
+from ctr.builders.common import UNSAFE_MEMBER, BuildError
+from ctr.datasets import CASE_STUDIES, CaseStudyDataset
+from ctr.download import Build, Source, build_dataset, local_path
+from ctr.gates import load_thresholds
 
 GENES = ["G1", "G2", "TRBC2", "TRAV1", "G5"]
 # Cell ids: <16 nt>-<aggr id>. c1 and c4 share a barcode core, one in each sample.
@@ -174,7 +174,7 @@ def test_a_cell_without_a_table_row_is_unlabelled_with_zero_counts(built: ad.Ann
 
 
 def test_the_clone_id_format_is_the_common_call(built: ad.AnnData) -> None:
-    from lumencell.bench.builders.common import call_clones
+    from ctr.builders.common import call_clones
 
     contigs = pd.DataFrame(
         {
@@ -345,9 +345,8 @@ def test_build_dataset_writes_the_derived_file_by_atomic_rename(
 def test_bench_fetch_finds_a_case_study_by_its_id_but_all_skips_it(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from typer.testing import CliRunner
-
     from lumencell.cli import app
+    from typer.testing import CliRunner
 
     monkeypatch.setenv("LUMENCELL_DATASETS_DIR", str(tmp_path))
     out = CliRunner().invoke(app, ["bench", "fetch", "sheih2020"], input="n\n")

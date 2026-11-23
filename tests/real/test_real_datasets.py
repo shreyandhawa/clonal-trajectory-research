@@ -3,7 +3,7 @@
 import anndata as ad
 import pytest
 
-from lumencell.bench.datasets import DATASETS, is_cached, local_path, sha256_of, source_path, truth_for
+from ctr.datasets import DATASETS, is_cached, local_path, sha256_of, source_path, truth_for
 
 pytestmark = [
     pytest.mark.real_data,
@@ -28,7 +28,7 @@ def test_cached_dataset_matches_its_checksum_and_truth(dataset_id: str) -> None:
 
 
 def test_case_study_files_match_their_checksums() -> None:
-    from lumencell.bench.datasets import CASE_STUDIES
+    from ctr.datasets import CASE_STUDIES
 
     for cs in CASE_STUDIES.values():
         if not all(source_path(s).exists() for s in cs.sources):

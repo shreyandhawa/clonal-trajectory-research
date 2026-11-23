@@ -470,8 +470,8 @@ def test_the_integer_check_sees_the_100000th_value(tmp_path: Path) -> None:
 @pytest.mark.real_data
 @pytest.mark.slow
 def test_the_capture_map_joins_on_the_real_files(tmp_path: Path) -> None:
-    from lumencell.bench.builders.daniel2022 import CAPTURES, SOURCES
-    from lumencell.bench.download import datasets_dir
+    from ctr.builders.daniel2022 import CAPTURES, SOURCES
+    from ctr.download import datasets_dir
 
     d = datasets_dir()
     if not all((d / s.filename).is_file() for s in SOURCES):

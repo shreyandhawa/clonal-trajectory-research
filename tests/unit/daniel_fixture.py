@@ -16,8 +16,8 @@ import pytest
 import scipy.io
 import scipy.sparse as sp
 
-from lumencell.bench.builders import daniel2022
-from lumencell.bench.builders.daniel2022 import Capture
+from ctr.builders import daniel2022
+from ctr.builders.daniel2022 import Capture
 
 GSM_A, GSM_B, GSM_D = "GSM_A", "GSM_B", "GSM_D"
 TAG_A, TAG_B, TAG_D, TAG_X = "A_gex_", "B_gex_", "D_gex_", "X_gex_"

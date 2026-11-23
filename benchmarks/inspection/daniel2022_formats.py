@@ -28,8 +28,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from lumencell.bench.builders.common import BuildError, read_members
-from lumencell.bench.builders.daniel2022 import SOURCES
+from ctr.builders.common import BuildError, read_members
+from ctr.builders.daniel2022 import SOURCES
 
 MATRICES = {"main": "GSE188666_scRNA_LCMV", "d5": "GSE188666_scRNA_D5_LCMV"}
 TAR = "GSE188666_RAW.tar"

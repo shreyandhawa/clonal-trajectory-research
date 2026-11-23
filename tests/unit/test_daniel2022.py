@@ -13,10 +13,12 @@ import pytest
 import scipy.io
 import scipy.sparse
 import scipy.sparse as sp
+from lumencell.clonal.isolation import receptor_gene_mask, scoring_only_columns
+from lumencell.data.loader import load
 
-from lumencell.bench.builders import daniel2022
-from lumencell.bench.builders.common import CONTIG_COLUMNS, UNSAFE_MEMBER, BuildError
-from lumencell.bench.builders.daniel2022 import (
+from ctr.builders import daniel2022
+from ctr.builders.common import CONTIG_COLUMNS, UNSAFE_MEMBER, BuildError
+from ctr.builders.daniel2022 import (
     BUILD_VERSION,
     CAPTURES,
     COLUMN_RENAMES,
@@ -27,8 +29,6 @@ from lumencell.bench.builders.daniel2022 import (
     SOURCES,
     build,
 )
-from lumencell.clonal.isolation import receptor_gene_mask, scoring_only_columns
-from lumencell.data.loader import load
 from tests.unit.daniel_fixture import (
     B2,
     BAD_TRA,
@@ -737,8 +737,8 @@ def test_reading_an_integer_matrix_makes_no_float_temporaries(tmp_path: Path) ->
 
 
 def test_listable_masks_every_name_that_is_not_a_plain_file_name() -> None:
-    from lumencell.bench.builders.common import listable
-    from lumencell.bench.download import SAFE_NAME
+    from ctr.builders.common import listable
+    from ctr.download import SAFE_NAME
 
     unsafe = ["ok.csv/../../x", "a.csv\x1b[31m", "a.csv\nb", "a" * 300, "", "/abs", "a b.csv"]
     assert listable(unsafe) == [UNSAFE_MEMBER] * len(unsafe)

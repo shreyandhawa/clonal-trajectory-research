@@ -23,9 +23,10 @@ from dataclasses import dataclass, field
 
 import numpy as np
 import pandas as pd
+from lumencell.bench.truth import Truth
 
-from lumencell.bench.builders import daniel2022, sheih2020
-from lumencell.bench.download import (
+from ctr.builders import daniel2022, sheih2020
+from ctr.download import (
     USER_AGENT,
     Build,
     FetchError,
@@ -37,7 +38,6 @@ from lumencell.bench.download import (
     sha256_of,
     source_path,
 )
-from lumencell.bench.truth import Truth
 
 __all__ = [
     "CASE_STUDIES",

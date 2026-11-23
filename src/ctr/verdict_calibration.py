@@ -30,7 +30,6 @@ from typing import Any, Literal
 
 import anndata as ad
 import numpy as np
-
 from lumencell.bench.synth import generate
 from lumencell.bench.synth_controls import control_root_cell, generate_control
 from lumencell.data.loader import Dataset, load

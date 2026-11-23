@@ -22,8 +22,8 @@ import pandas as pd
 import scipy.sparse as sp
 from anndata import AnnData
 
-from lumencell.bench.builders.common import MAX_PER_CHAIN, BuildError, call_clones, listable, read_members
-from lumencell.bench.download import Source
+from ctr.builders.common import MAX_PER_CHAIN, BuildError, call_clones, listable, read_members
+from ctr.download import Source
 
 BUILD_VERSION = 2
 CHUNK_ROWS = 500

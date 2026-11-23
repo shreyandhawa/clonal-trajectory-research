@@ -8,22 +8,23 @@ from typing import Any, get_args
 import numpy as np
 import pandas as pd
 import pytest
-from typer.testing import CliRunner
-
-import lumencell.bench.real_clonal as real_clonal_mod
-from lumencell.bench import report, runner
-from lumencell.bench.datasets import DATASETS, RealClonal, RealDataset, truth_for
-from lumencell.bench.download import Source, sha256_of
-from lumencell.bench.gates import REPO, check_gates, load_thresholds
 from lumencell.bench.metrics import Scores
-from lumencell.bench.real_clonal import adjusted_rand_index, clone_recurrence, reported_metrics
-from lumencell.bench.runner import CaseResult, ClonalRow, ClonalRowStatus, run_real_case
+from lumencell.bench.runner import CaseResult, ClonalRow, ClonalRowStatus
 from lumencell.bench.synth import generate
 from lumencell.bench.synth_clones import DEFAULT_LAYER, add_clones
 from lumencell.bench.truth import Truth
-from lumencell.cli import app
 from lumencell.engine import stability as stability_mod
 from lumencell.engine.context import InferenceContext
+from typer.testing import CliRunner
+
+import ctr.real_clonal as real_clonal_mod
+from ctr import real_case, report
+from ctr.cli import app
+from ctr.datasets import DATASETS, RealClonal, RealDataset, truth_for
+from ctr.download import Source, sha256_of
+from ctr.gates import REPO, check_gates, load_thresholds
+from ctr.real_case import run_real_case
+from ctr.real_clonal import adjusted_rand_index, clone_recurrence, reported_metrics
 
 BASE_GATES = load_thresholds()["real"]["daniel2022"]["gates"]
 RESULTS_PATH = REPO / "benchmarks/results/real-test.json"
@@ -104,9 +105,9 @@ def test_every_clone_column_of_a_built_dataset_is_scoring_only(
     fake: str, monkeypatch: pytest.MonkeyPatch
 ) -> None:  # Review Focus 4
     seen: dict[str, InferenceContext] = {}
-    real = runner.run_method
+    real = real_case.run_method
     monkeypatch.setattr(
-        runner, "run_method", lambda ctx, *a, **k: (seen.setdefault("ctx", ctx), real(ctx, *a, **k))[1]
+        real_case, "run_method", lambda ctx, *a, **k: (seen.setdefault("ctx", ctx), real(ctx, *a, **k))[1]
     )
     run_real_case(fake, "paga_dpt")
     cols = {"clone_id", "clone_id_trb", "raw_clonotype_id", "receptor_n_tra", "receptor_n_trb", "donor"}
@@ -217,9 +218,9 @@ def _daniel_cell(monkeypatch: pytest.MonkeyPatch, **kw: Any) -> str:
 
 
 def _run_cli(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, row: dict[str, Any]) -> str:
-    monkeypatch.setattr("lumencell.bench.datasets.is_cached", lambda d: True)
+    monkeypatch.setattr("ctr.datasets.is_cached", lambda d: True)
     monkeypatch.setattr(
-        "lumencell.bench.runner.run_real_case",
+        "ctr.real_case.run_real_case",
         lambda *a, **k: type(
             "C", (), {"row": lambda self: dict(row, runtime_seconds=1.0, tree_support="not_measured")}
         )(),
@@ -227,7 +228,6 @@ def _run_cli(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, row: dict[str, Any
     res = cli.invoke(
         app,
         [
-            "bench",
             "real",
             "--datasets",
             "daniel2022",
@@ -268,10 +268,10 @@ def test_p14_never_hides_a_real_failure_in_the_readme_cell(monkeypatch: pytest.M
 def test_p14_never_hides_a_real_failure_in_the_cli_line(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    from lumencell.bench.gates import GateFailure
+    from ctr.gates import GateFailure
 
     monkeypatch.setattr(
-        "lumencell.bench.gates.check_gates",
+        "ctr.gates.check_gates",
         lambda row, gates: [GateFailure("daniel2022", "pt_spearman_lineage", 0.1, ">= 0.7")],
     )
     output = _run_cli(monkeypatch, tmp_path, _daniel_row())

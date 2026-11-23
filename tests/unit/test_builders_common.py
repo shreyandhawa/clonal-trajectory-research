@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from lumencell.bench.builders.common import (
+from ctr.builders.common import (
     CONTIG_COLUMNS,
     BuildError,
     call_clones,

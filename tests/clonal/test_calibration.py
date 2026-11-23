@@ -8,17 +8,17 @@ import os
 from pathlib import Path
 
 import pytest
+from lumencell.engine.registry import METHODS
 from scipy.stats import binom
 
-from lumencell.bench.calibration import (
+from ctr.calibration import (
     CalibrationReport,
     RejectionCount,
     rejection_bound,
     run_calibration,
     write_report,
 )
-from lumencell.bench.gates import load_thresholds
-from lumencell.engine.registry import METHODS
+from ctr.gates import load_thresholds
 
 pytestmark = pytest.mark.slow
 

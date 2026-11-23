@@ -8,12 +8,12 @@ from datetime import date
 from typing import Any
 
 import pytest
-
 from lumencell.api.models import ClonalSettings
-from lumencell.bench.builders.common import CONTIG_COLUMNS
-from lumencell.bench.gates import THRESHOLDS, load_thresholds
 from lumencell.engine.roots import ClusterRoot, parse_root
 from lumencell.trust.clonal import settings_columns
+
+from ctr.builders.common import CONTIG_COLUMNS
+from ctr.gates import THRESHOLDS, load_thresholds
 
 # Task 9's note: the 13 columns of every *-unpaired-clonotypes.csv.gz table.
 SHEIH_TABLE_COLUMNS = (

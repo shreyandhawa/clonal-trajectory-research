@@ -4,8 +4,9 @@ The pinned values are the committed real-2026-11-20 results and baseline; when a
 committed, regenerate the file and update these pins with it, never the thresholds.
 """
 
-from lumencell.bench.reference import PACKAGED, render
 from lumencell.bench.reference_data import rows_for
+
+from ctr.reference import PACKAGED, render
 
 
 def _row(method: str, dataset: str, gate: str) -> dict[str, object]:
@@ -15,7 +16,7 @@ def _row(method: str, dataset: str, gate: str) -> dict[str, object]:
 
 def test_packaged_file_matches_the_committed_results() -> None:
     assert PACKAGED.read_text(encoding="utf-8") == render(), (
-        "reference_scores.json is stale: run `uv run python -m lumencell.bench.reference`"
+        "reference_scores.json is stale: run `uv run python -m ctr.reference`"
     )
 
 

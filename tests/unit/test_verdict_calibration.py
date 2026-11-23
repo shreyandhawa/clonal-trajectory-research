@@ -12,9 +12,10 @@ from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
+from lumencell.engine.tree_support import Thresholds, calibrated_thresholds
 
-from lumencell.bench.gates import load_thresholds
-from lumencell.bench.verdict_calibration import (
+from ctr.gates import load_thresholds
+from ctr.verdict_calibration import (
     Calibration,
     CheckCalibration,
     Group,
@@ -30,7 +31,6 @@ from lumencell.bench.verdict_calibration import (
     verify,
     write_json,
 )
-from lumencell.engine.tree_support import Thresholds, calibrated_thresholds
 
 CFG = load_thresholds()
 CAL = CFG["tree_support"]["calibration"]
@@ -233,7 +233,7 @@ def test_a_payload_with_every_run_is_complete() -> None:
 
 @pytest.mark.slow
 def test_calibration_on_the_declared_seeds(tmp_path_factory: pytest.TempPathFactory) -> None:
-    from lumencell.bench.calibration import _commit
+    from ctr.calibration import _commit
 
     seeds: dict[Group, list[int]] = {"matrix": CAL["matrix_seeds"], "control": CAL["control_seeds"]}
     records = collect_records(CFG, seeds, CAL["methods"], tmp_path_factory.mktemp("verdict-cal"))
@@ -395,7 +395,7 @@ def test_expected_verification_runs_use_the_fresh_seeds() -> None:
 
 @pytest.mark.slow
 def test_verification_on_fresh_seeds(tmp_path_factory: pytest.TempPathFactory) -> None:
-    from lumencell.bench.calibration import _commit
+    from ctr.calibration import _commit
 
     seeds: dict[Group, list[int]] = {"matrix": VER["matrix_seeds"], "control": VER["control_seeds"]}
     records = collect_records(CFG, seeds, CAL["methods"], tmp_path_factory.mktemp("verdict-ver"))

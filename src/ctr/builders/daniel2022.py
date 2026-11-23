@@ -21,14 +21,14 @@ import scipy.io
 import scipy.sparse as sp
 from anndata import AnnData
 
-from lumencell.bench.builders.common import (
+from ctr.builders.common import (
     CONTIG_COLUMNS,
     BuildError,
     call_clones,
     listable,
     read_members,
 )
-from lumencell.bench.download import Source
+from ctr.download import Source
 
 GEO_SUPPL = "https://ftp.ncbi.nlm.nih.gov/geo/series/GSE188nnn/GSE188666/suppl/"
 

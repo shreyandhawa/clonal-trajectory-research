@@ -1,6 +1,6 @@
 """Writes the reference rows the trust panel shows, from the committed benchmark results.
 
-Run ``uv run python -m lumencell.bench.reference`` after a new result or a threshold change.
+Run ``uv run python -m ctr.reference`` after a new result or a threshold change.
 ``tests/unit/test_reference_scores.py`` fails while the packaged file differs from what this
 module builds.
 
@@ -15,11 +15,14 @@ import math
 from pathlib import Path
 from typing import Any
 
-from lumencell.bench.datasets import DATASETS, lineage_gates_note
-from lumencell.bench.gates import BASELINE, check_gates, load_thresholds
-from lumencell.bench.report import latest_real
+from lumencell.bench import reference_data
 
-PACKAGED = Path(__file__).with_name("reference_scores.json")
+from ctr.datasets import DATASETS, lineage_gates_note
+from ctr.gates import BASELINE, check_gates, load_thresholds
+from ctr.report import latest_real
+
+# The file lumencell ships and its trust panel reads; with a sibling checkout this writes into it.
+PACKAGED = Path(reference_data.__file__).with_name("reference_scores.json")
 
 METRIC_LABELS = {
     "pt_spearman_global": "Pseudotime, global",

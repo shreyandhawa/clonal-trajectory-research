@@ -5,9 +5,10 @@ import math
 from pathlib import Path
 
 import pytest
+from lumencell.clonal.scores import ClonalResult
 from scipy.stats import binom
 
-from lumencell.bench.calibration import (
+from ctr.calibration import (
     CalibrationReport,
     MonotonicCase,
     RejectionCount,
@@ -15,8 +16,7 @@ from lumencell.bench.calibration import (
     rejection_bound,
     write_report,
 )
-from lumencell.bench.gates import REPO, load_thresholds
-from lumencell.clonal.scores import ClonalResult
+from ctr.gates import REPO, load_thresholds
 
 NAN = math.nan
 
@@ -218,7 +218,7 @@ def test_run_calibration_reads_its_table_and_passes_the_split_to_every_score(
     split: str,
     keys: bool,
 ) -> None:
-    import lumencell.bench.calibration as cal
+    import ctr.calibration as cal
 
     seen: list[str] = []
     generated: list[int] = []
@@ -291,9 +291,9 @@ def test_every_calibration_path_forwards_the_split(
 
     import anndata as ad
     import numpy as np
-
-    from lumencell.bench import calibration as cal
     from lumencell.clonal.labels import encode_clones
+
+    from ctr import calibration as cal
 
     seen: list[str] = []
 

@@ -15,20 +15,7 @@ import anndata as ad
 import numpy as np
 import pandas as pd
 import pytest
-from scipy import sparse
-
 from lumencell.api.models import ClonalSettings
-from lumencell.bench import case_study
-from lumencell.bench.case_study import (
-    CaseStudyDeclaration,
-    load_declaration,
-    render_markdown,
-    run_case_study,
-    run_units,
-    split_units,
-    write_report,
-)
-from lumencell.bench.report import replace_section
 from lumencell.bench.synth import generate
 from lumencell.bench.synth_clones import DEFAULT_LAYER, add_clones
 from lumencell.engine.roots import ClusterRoot
@@ -41,6 +28,19 @@ from lumencell.engine.tree_support import (
 )
 from lumencell.trust.clonal import settings_columns
 from lumencell.trust.constants import VERDICT_VERIFIED_ON
+from scipy import sparse
+
+from ctr import case_study
+from ctr.case_study import (
+    CaseStudyDeclaration,
+    load_declaration,
+    render_markdown,
+    run_case_study,
+    run_units,
+    split_units,
+    write_report,
+)
+from ctr.report import replace_section
 
 SETTINGS = ClonalSettings(clone_key="clone_id", donor_key="donor", strata_keys=["timepoint"])
 ROOT = ClusterRoot("timepoint", "t0")
@@ -408,7 +408,7 @@ def test_replace_section_rewrites_only_between_the_markers(tmp_path: Path) -> No
 def _load_script() -> Any:
     import importlib.util
 
-    path = Path(case_study.__file__).parents[3] / "benchmarks" / "case_studies" / "sheih2020.py"
+    path = Path(case_study.__file__).parents[2] / "benchmarks" / "case_studies" / "sheih2020.py"
     spec = importlib.util.spec_from_file_location("sheih2020_script", path)
     assert spec is not None and spec.loader is not None
     mod = importlib.util.module_from_spec(spec)

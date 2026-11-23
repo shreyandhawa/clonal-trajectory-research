@@ -28,8 +28,6 @@ from typing import Any
 
 import anndata as ad
 import numpy as np
-from scipy.stats import binom
-
 from lumencell.bench.synth import generate, truth_from_adata
 from lumencell.bench.synth_clones import ClonalLayer, Control, add_clones, clone_truth
 from lumencell.bench.truth import Truth
@@ -41,8 +39,10 @@ from lumencell.engine.registry import run_method
 from lumencell.engine.roots import ClusterRoot
 from lumencell.prep.pipeline import run_pipeline
 from lumencell.prep.stages import PrepParams
+from scipy.stats import binom
 
-REPO = Path(__file__).resolve().parents[3]
+from ctr.gates import REPO
+
 CLONE_COLUMNS = ("clone_id", "donor")
 # Monotonicity's second condition: the oracle's p at fate_bias 0 must be above this.
 P_AT_ZERO_MIN = 0.01

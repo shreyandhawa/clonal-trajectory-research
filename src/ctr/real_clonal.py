@@ -15,13 +15,13 @@ from typing import Any
 import numpy as np
 import numpy.typing as npt
 import pandas as pd
-from scipy.stats import spearmanr
-
-from lumencell.bench.datasets import RealDataset
 from lumencell.bench.runner import ClonalRow, clonal_row
 from lumencell.bench.truth import Truth
 from lumencell.clonal.labels import is_missing
 from lumencell.engine.schema import TrajectoryResult
+from scipy.stats import spearmanr
+
+from ctr.datasets import RealDataset
 
 _NUMBER = re.compile(r"[-+]?\d*\.?\d+")
 

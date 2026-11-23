@@ -4,7 +4,6 @@ from collections.abc import Sequence
 
 import numpy as np
 import pytest
-
 from lumencell.clonal.labels import CloneCodes, encode_clones
 from lumencell.clonal.scores import _lineage_weights, _n2_groups, _onset_segments, score_clonal
 

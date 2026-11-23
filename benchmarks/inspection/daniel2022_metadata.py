@@ -17,9 +17,9 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-
-from lumencell.bench.builders.daniel2022 import SOURCES
 from lumencell.clonal.isolation import RECEPTOR_COLUMN
+
+from ctr.builders.daniel2022 import SOURCES
 
 WITHHELD_PARTS = ("clon", "cdr3", "tcr", "tra", "trb", "chain", "vdj", "_gene")
 CORE = re.compile(r"[ACGT]{16}")
