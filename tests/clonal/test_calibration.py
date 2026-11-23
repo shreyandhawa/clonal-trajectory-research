@@ -64,6 +64,11 @@ def test_donor_confound_with_donors_ignored_is_not(report: CalibrationReport) ->
     assert _check(report, "donor_confound/N1_donors_ignored").passed
 
 
+@pytest.mark.xfail(
+    strict=True,
+    reason="Recorded failure: 57/200 rejections, bound 18 (clonal-calibration-2026-11-13.json). "
+    "Phase 1's decile N2; the N2a amendment's check is test_calibration_n2_amended.py.",
+)
 def test_depth_only_is_calibrated_under_n2(report: CalibrationReport) -> None:
     assert _check(report, "depth_only/N2").passed
 
