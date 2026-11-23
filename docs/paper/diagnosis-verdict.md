@@ -27,9 +27,9 @@ so C1 fails and it is not_supported. All five match the file.
 
 ## Which number, and against which lumencell (Check R)
 
-- **R1 did not reproduce.** At lumenCell_V2 `37197c8` (read through `git archive`, with today's libraries), 66 of 72
-  records match the recorded file within 1e-9, including all 28 supported controls. The 6 that differ are
-  `two_groups` scfates_ppt, seeds 3-5 (3 runs, two records each): they recorded `IndexError`, now run
+- **R1 did not reproduce.** At lumenCell_V2 `37197c8` (read through `git archive`, with today's libraries), 69 of 72
+  records match the recorded file within 1e-9, including all 28 supported controls. The 3 that differ are
+  `two_groups` scfates_ppt, seeds 3-5: they recorded `IndexError`, now run
   with coverage 1.0 and so are rated supported. That makes 31 of 34 at the recording commit on today's libraries.
   The code is the same, so the difference is in what is installed around it; I did not find which library
   (untested).
