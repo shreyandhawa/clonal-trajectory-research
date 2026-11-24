@@ -98,17 +98,17 @@ and `make paper-numbers` runs from an unzipped copy after `uv sync`.
 
 ## C. Software Heritage (keeps every commit)
 
-The timeline in [preregistration.md](preregistration.md) rests on commit hashes, including lumenCell_V2 commits
+The timeline in [declarations.md](declarations.md) rests on commit hashes, including lumenCell_V2 commits
 that are in no release. Software Heritage archives the whole history with its hashes:
 
 1. Open https://archive.softwareheritage.org/save/ .
 2. Origin type "git", URL `https://github.com/shreyandhawa/lumenCell_V2`, submit. Repeat for
    `https://github.com/shreyandhawa/clonal-trajectory-research`.
 3. When each save shows "succeeded", copy its SWHID for the commits the paper names (`37197c8` and the declaration
-   commits) and add them to preregistration.md if you want permanent references.
+   commits) and add them to declarations.md if you want permanent references.
 
 ## What is not archived anywhere yet
 
-- GitHub's event log (push times used in preregistration.md) keeps at most 300 events for 90 days. The raw
+- GitHub's event log (push times used in declarations.md) keeps at most 300 events for 90 days. The raw
   responses were saved on 2026-11-24 in [evidence/](evidence/README.md), so they go into the archive with the repo.
 - The cached datasets are not archived by you; each is cited by its own accession ([data.md](data.md)).

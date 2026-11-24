@@ -1,6 +1,6 @@
 # GitHub records behind the declaration timeline
 
-These are the raw GitHub API responses used for [preregistration.md](../preregistration.md). They are saved here
+These are the raw GitHub API responses used for [declarations.md](../declarations.md). They are saved here
 because GitHub's repository event log, the source of the push and branch-creation times, keeps at most 300 events
 for 90 days. This copy goes into the archive before that log expires.
 

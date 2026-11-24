@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Saves the GitHub API responses behind docs/paper/preregistration.md. Read-only calls; needs `gh auth login`.
+# Saves the GitHub API responses behind docs/paper/declarations.md. Read-only calls; needs `gh auth login`.
 # Run from the repo root: bash docs/paper/evidence/fetch.sh
 # Each file is the API's JSON body, all pages wrapped in one outer array (gh api --paginate --slurp).
 # *.headers keep the first page's status line, Date (GitHub's own clock) and X-GitHub-Request-Id; headers that

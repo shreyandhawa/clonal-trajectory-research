@@ -13,7 +13,7 @@ from ctr import paper_numbers
 
 PAPER = paper_numbers.REPO / "docs" / "paper"
 TAG = re.compile(r"<!--n:([^>]+?)-->(.*?)<!--/n-->", re.S)
-DOCS = [p for p in (PAPER / "claim.md", PAPER / "draft.md") if p.exists()]
+DOCS = [p for p in (PAPER / "claim.md", PAPER / "draft.md", PAPER / "supplement.md") if p.exists()]
 
 
 def _tags(text: str) -> list[tuple[str, str]]:
@@ -32,6 +32,14 @@ def test_marked_numbers_match_the_result_files(doc, nums):
     assert tags, f"{doc.name} marks no numbers"
     wrong = [(k, v, nums.get(k, "<no such key>")) for k, v in tags if nums.get(k) != v]
     assert not wrong, "\n".join(f"{k}: text {v!r}, result files {n!r}" for k, v, n in wrong)
+
+
+def test_draft_avoids_registry_wording():
+    # There is no registry entry: the paper says "declared in advance", never pre-registered (claim.md).
+    draft = PAPER / "draft.md"
+    if draft.exists():
+        assert not re.search(r"pre-?regist", draft.read_text(), re.I)
+    assert (PAPER / "declarations.md").exists()
 
 
 def test_headline_numbers(nums):
