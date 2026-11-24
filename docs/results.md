@@ -54,9 +54,17 @@ k-means clustering baseline (Δη) is above 0. Four of the 12 runs pass it.
 - **The direction comes from an assumed root.** The paper's main text and Methods name no trajectory root (the supplementary figures were not read).
 - **It is four patients.** Two have CLL and two have NHL. Nothing here applies beyond them.
 - **There is no batch correction.** Pooled runs may mix patient structure into the lineages, so the pooled run is a diagnostic only.
-- **Clone scores fall under stricter nulls.** In every per-patient run, the clone score against the time-point null or the pseudotime-depth null is below half its value against the within-patient null.
-- **The lineages add little.** Expression clustering matches most of the clone score. Δη is at most 0.050 in absolute value.
+- **Clone scores fall under the time-point null.** In every per-patient run, the point estimate of the clone score against the time-point null is below half its value against the within-patient null (ratio 0.03 to 0.49). Two intervals reach above half: NHL-7 palantir 0.439 [0.179, 0.625] and NHL-7 scfates_ppt 0.491 [0.245, 0.770]. Against the pseudotime-depth null the score is not below half in every run (CLL-1 paga_dpt: 0.695 to 0.363).
+- **The lineages add little.** Expression clustering matches most of the clone score. Δη is at most 0.050 in absolute value as a point estimate (−0.050 to +0.049). Its clone-bootstrap intervals are wider (up to [0.008, 0.088] and [−0.061, −0.037]): 4 runs have an interval wholly above zero and 3 wholly below.
 - **Each method scores its own cells.** So the three methods are not compared like for like.
 - **Blood only.** The infusion product is a cultured, stimulated cell population.
 
 Full details: [the case study](case-studies/sheih-2020.md) and [the handoff](superpowers/HANDOFF.md).
+
+## Corrections
+
+**2026-11-23.** Two lines under "What it does not show" were corrected.
+- *Clone scores.* The old line said the score was below half "against the time-point null or the pseudotime-depth null" in every run. That held only because of the "or": against the pseudotime-depth null alone it is false (CLL-1 paga_dpt 0.695 to 0.363, a ratio of 0.52). The line now names the time-point null, and gives the two runs whose intervals reach above half.
+- *k-means baseline.* The old line gave "at most 0.050" with no uncertainty. The line now adds the clone-bootstrap intervals.
+
+Both come from `benchmarks/results/diagnosis-clonal-2026-11-23.json` (clone bootstrap, 500 replicates, 95% percentile; [diagnosis page](paper/diagnosis-clonal.md)) and the case-study table. No other finding on this page changed, and no rule, threshold or null changed.
