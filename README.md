@@ -8,6 +8,30 @@ lumencell is the tool. This repo is the evidence: how well trajectory methods an
 (TCR clonotype) checks hold up on real datasets, the gates declared before each analysis, and the
 written case studies. History for the moved files was kept from the original repo.
 
+## What it found
+
+Two findings so far. Both are about these checks on this data, not about trajectory methods in
+general.
+
+1. **The verdict rule cannot tell a tree from a non-tree.** As it was checked, lumencell's verdict
+   rule looks at one thing: whether at least 95% of cells get a pseudotime. On lumencell 0.5.0 it
+   rated 27 of 30 negative-control runs (blobs, loops, sheets, two separate groups) as "supported".
+   A tree measure the rule does not use separates all four control kinds from the tree datasets.
+   So lumencell never shows "supported" on real data; it caps it at "not shown to be a tree".
+2. **Clone agreement is weaker than the default comparison suggests.** In one public CAR-T dataset
+   (Sheih et al. 2020: four patients, three methods, 12 runs), agreement between T-cell-receptor
+   clones and the inferred lineages falls to under half when clones are shuffled within a time
+   point instead of within a patient (ratio 0.03 to 0.49 as point estimates; the two widest
+   intervals reach 0.625 and 0.770). A k-means clustering that uses no trajectory comes within
+   0.05 of the score in every run.
+
+What explains the drop in the second finding is open: a synthetic test of clones confined to time
+points did not reproduce it. It is one dataset and four patients.
+
+Details and limits: [docs/results.md](docs/results.md),
+[the claim and its sources](docs/paper/claim.md), and the two diagnosis pages
+([verdict](docs/paper/diagnosis-verdict.md), [clonal](docs/paper/diagnosis-clonal.md)).
+
 ## Layout
 
 | Path | What |
