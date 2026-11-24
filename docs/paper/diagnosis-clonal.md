@@ -77,6 +77,13 @@ Declined by the owner: the paper treats Sheih 2020 as a single case study. Not r
 ## What this lets the paper claim
 
 In four patients' CAR-T cells, the clone agreement score against the time-point null is under half of that against the
-within-patient null in the point estimates of all 12 runs (R 0.03 to 0.49), but two runs' intervals reach 0.62 and 0.77; synthetic planted-clone data
+within-patient null in the point estimates of all 12 runs (R 0.03 to 0.49), but two runs' intervals reach 0.625 and 0.770; synthetic planted-clone data
 show that time tied to clones does not by itself produce a gap like this, so the paper reports the time-point-null eta with its
 interval as the headline and does not call the score confounded.
+
+## Corrections
+
+**2026-11-23.** In "What this lets the paper claim", the upper end of NHL-7 palantir's R interval was given as
+0.62. The value in `benchmarks/results/diagnosis-clonal-2026-11-23.json` is 0.6253, which is 0.625 at three
+decimals (as in the table above) and 0.63 at two; 0.62 was a truncation. The sentence now gives 0.625 and 0.770.
+Nothing else on this page changed.
