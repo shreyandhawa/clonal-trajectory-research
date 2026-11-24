@@ -15,6 +15,7 @@ import json
 import sys
 from collections.abc import Mapping
 from pathlib import Path
+from statistics import median
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[2]
@@ -22,6 +23,8 @@ RESULTS = REPO / "benchmarks" / "results"
 VERDICT = RESULTS / "diagnosis-verdict-2026-11-23.json"
 CLONAL = RESULTS / "diagnosis-clonal-2026-11-23.json"
 RECORDED = RESULTS / "verdict-verification-2026-11-17.json"
+CALIB = RESULTS / "clonal-calibration-2026-11-13.json"
+CASE = REPO / "benchmarks" / "case_studies" / "results" / "sheih2020-2026-11-20.json"
 P_MAX = 0.01  # the declared clone-check bar ([clonal] p_max)
 
 Doc = Mapping[str, Any]
@@ -66,13 +69,19 @@ def verdict_numbers(v: Doc, recorded: Doc) -> dict[str, str]:
     out["verdict.defect.trees"] = _range([d["defect99"] for d in ds if d["group"] == "matrix"])
     for k in kinds:
         out[f"verdict.defect.{k}"] = _range([d["defect99"] for d in ds if d["kind"] == k])
+    sr = v["structure"]["runs"]
+    out["verdict.rho.trees"] = f"{median([r['abs_rho'] for r in sr if r['group'] == 'matrix']):.2f}"
+    for k in ("loop", "sheet"):
+        out[f"verdict.rho.{k}"] = f"{median([r['abs_rho'] for r in sr if r['kind'] == k]):.2f}"
+    out["verdict.r2_failed"] = str(v["reproduce_on_0_5_0"]["n_failed"])
+    out["verdict.n_verdicts"] = str(v["rederive"]["n"])
     return out
 
 
-def clonal_numbers(c: Doc) -> dict[str, str]:
+def clonal_numbers(c: Doc, case: Doc) -> dict[str, str]:
     out: dict[str, str] = {}
     runs = c["sheih_bootstrap"]
-    ratios, deltas, above, below, passes = [], [], 0, 0, 0
+    ratios, deltas, above, below, passes, drift, zero_in_R = [], [], 0, 0, 0, 0.0, 0
     for run, r in runs.items():
         p, ci = r["point"], r["bootstrap"]["ci"]
         ratio = p["eta"]["N3"] / p["eta"]["N1"]
@@ -86,6 +95,14 @@ def clonal_numbers(c: Doc) -> dict[str, str]:
         out[f"clonal.{run}.R"] = _ci(ratio, ci["R"])
         out[f"clonal.{run}.delta"] = _ci(p["delta_eta"], ci["delta_eta"])
         out[f"clonal.{run}.R_hi"] = f"{ci['R'][1]:.3f}"
+        out[f"clonal.{run}.clones"] = str(p["n_clones"])
+        out[f"clonal.{run}.R_N2"] = f"{p['eta']['N2'] / p['eta']['N1']:.2f}"
+        zero_in_R += ci["R"][0] <= 0
+        out[f"clonal.{run}.p"] = f"{max(p['p'].values()):.3f}"
+        out[f"clonal.{run}.pass"] = "pass" if max(p["p"].values()) <= P_MAX and p["delta_eta"] > 0 else "no"
+        unit, method = run.split("/")
+        recorded = case["units"][unit]["methods"][method]["clonal"]["primary"]["eta"]
+        drift = max(drift, abs(p["eta"]["N1"] - recorded))
     n = len(runs)
     out["clonal.n_runs"] = str(n)
     out["clonal.R_under_half"] = _of(sum(x < 0.5 for x in ratios), n)
@@ -95,11 +112,21 @@ def clonal_numbers(c: Doc) -> dict[str, str]:
     out["clonal.delta_ci_above"] = str(above)
     out["clonal.delta_ci_below"] = str(below)
     out["clonal.pass"] = _of(passes, n)
+    out["clonal.p_sig"] = _of(sum(max(r["point"]["p"].values()) <= P_MAX for r in runs.values()), n)
+    out["clonal.max_drift"] = f"{drift:.3f}"
+    out["clonal.R_ci_includes_zero"] = str(zero_in_R)
     cells = c["synthetic"]["summary"]["cells"]
     for sigma in ("0.1", "0.4"):
         out[f"clonal.syn.T1.eta_N1.{sigma}"] = f"{cells[f'oracle/{sigma}/T1']['eta_median_ci']['N1'][0]:.3f}"
-        out[f"clonal.syn.T2.R.{sigma}"] = f"{cells[f'oracle/{sigma}/T2']['ratio_median_ci'][0]:.2f}"
+        out[f"clonal.syn.T1.eta_N1.paga_dpt.{sigma}"] = (
+            f"{cells[f'paga_dpt/{sigma}/T1']['eta_median_ci']['N1'][0]:.3f}"
+        )
+        for arm in ("T2", "T3"):
+            out[f"clonal.syn.{arm}.R.{sigma}"] = f"{cells[f'oracle/{sigma}/{arm}']['ratio_median_ci'][0]:.2f}"
+        for mode in ("oracle", "paga_dpt"):
+            out[f"clonal.syn.T1.rej_N1.{mode}.{sigma}"] = str(cells[f"{mode}/{sigma}/T1"]["rejections"]["N1"])
     out["clonal.syn.n_seeds"] = str(c["synthetic"]["summary"]["n_seeds"])
+    out["clonal.syn.bound"] = str(c["synthetic"]["summary"]["bound"])
     d1 = {m["per_sigma"][s]["D1"] for m in c["synthetic"]["decisions"].values() for s in m["per_sigma"]}
     out["clonal.syn.D1"] = "fails" if d1 == {False} else "holds" if d1 == {True} else "mixed"
     return out
@@ -115,7 +142,9 @@ def numbers(
 ) -> dict[str, str]:
     """Every number the paper may cite, keyed, formatted as the text writes it."""
     v, r, c = verdict or _load(VERDICT), recorded or _load(RECORDED), clonal or _load(CLONAL)
-    return verdict_numbers(v, r) | clonal_numbers(c)
+    depth_n1 = next(x for x in _load(CALIB)["checks"] if x["name"] == "depth_only/N1")
+    calib = {"calib.depth_only_N1": _of(depth_n1["rejections"], depth_n1["n_scored"])}
+    return verdict_numbers(v, r) | clonal_numbers(c, _load(CASE)) | calib
 
 
 def assemble(fresh: Path) -> tuple[dict[str, Any], dict[str, Any]]:
