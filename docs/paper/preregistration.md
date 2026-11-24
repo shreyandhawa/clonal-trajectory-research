@@ -70,7 +70,8 @@ the matching commit here is given in brackets. Rows 9-10 are in this repository.
 - PRs and merge times: `gh api repos/shreyandhawa/lumenCell_V2/pulls?state=all` and the same for
   `clonal-trajectory-research`; per-PR commits: `.../pulls/<n>/commits`; force-pushes: `.../issues/<n>/timeline`.
 - Push and branch-creation times: `gh api repos/shreyandhawa/lumenCell_V2/events` (read 2026-11-23; GitHub keeps
-  at most 300 events over 90 days, so this record will disappear; the times above are copied from it).
+  at most 300 events over 90 days, so this record will disappear; the raw responses are saved in
+  [evidence/](evidence/README.md), fetched 2026-11-24).
 - Run commits and times: each result file's `commit` and `generated` fields.
 - Local log times (rows 9-10): file birth times in the author's scratch directory, read 2026-11-23. Not checkable
   by a reader; given as supporting detail only.

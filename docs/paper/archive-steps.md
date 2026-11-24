@@ -109,7 +109,6 @@ that are in no release. Software Heritage archives the whole history with its ha
 
 ## What is not archived anywhere yet
 
-- GitHub's event log (push times used in preregistration.md) keeps at most 300 events for 90 days. The times
-  are copied into preregistration.md, but the server record will expire. If you want a copy, save the output of
-  `gh api repos/shreyandhawa/lumenCell_V2/events --paginate` now; it is a copy you made, not a server record.
+- GitHub's event log (push times used in preregistration.md) keeps at most 300 events for 90 days. The raw
+  responses were saved on 2026-11-24 in [evidence/](evidence/README.md), so they go into the archive with the repo.
 - The cached datasets are not archived by you; each is cited by its own accession ([data.md](data.md)).
