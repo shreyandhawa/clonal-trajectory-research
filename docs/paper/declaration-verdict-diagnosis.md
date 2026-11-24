@@ -7,7 +7,7 @@ rule, threshold, seed, control or null. The checks are code in `src/ctr/diagnosi
 
 ## What I had already seen (so nobody reads a foreseeable result as a blind test)
 
-Before writing this I read `docs/superpowers/HANDOFF.md` (its Task 8, Task 9 and phase 2 final review
+Before writing this I read the project handoff (removed from the repo on 2026-11-24; last in git at commit fd0c974) (its Task 8, Task 9 and phase 2 final review
 sections), `benchmarks/thresholds.toml`, `src/ctr/verdict_calibration.py`, and I printed the 31 control
 rows of `verdict-verification-2026-11-17.json` (coverage, tree-likeness, C3, C4, lineage count). The
 HANDOFF already says the verdict was coverage alone ("supported means connected, not a tree").

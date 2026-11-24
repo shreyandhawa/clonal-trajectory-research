@@ -1,7 +1,7 @@
 """The case-study declaration (phase 3 Task 10), written before any analysis.
 
 The facts it is checked against come from Task 9's note
-(docs/superpowers/research/2026-11-19-sheih-verification.md), never from clone values.
+(docs/notes/research/2026-11-19-sheih-verification.md), never from clone values.
 """
 
 from datetime import date

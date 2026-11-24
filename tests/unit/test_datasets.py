@@ -516,7 +516,7 @@ def test_daniel_gates_are_the_declared_ones() -> None:
     }
 
 
-# Pinned literally from docs/superpowers/research/2026-11-20-daniel2022-declaration.md, so that any
+# Pinned literally from docs/notes/research/2026-11-20-daniel2022-declaration.md, so that any
 # later edit of the declaration fails here.
 DANIEL_CAPTURES = [
     "GSM5687827",

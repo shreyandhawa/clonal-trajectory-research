@@ -59,7 +59,7 @@ k-means clustering baseline (Δη) is above 0. Four of the 12 runs pass it.
 - **Each method scores its own cells.** So the three methods are not compared like for like.
 - **Blood only.** The infusion product is a cultured, stimulated cell population.
 
-Full details: [the case study](case-studies/sheih-2020.md) and [the handoff](superpowers/HANDOFF.md).
+Full details: [the case study](case-studies/sheih-2020.md).
 
 ## Corrections
 
