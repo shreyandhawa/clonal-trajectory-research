@@ -40,7 +40,7 @@ Details and limits: [docs/results.md](docs/results.md),
 | `benchmarks/thresholds.toml` | What the research declared before each analysis: real-data gates, case studies, calibration and verification. Merged over the thresholds lumencell ships |
 | `benchmarks/results/` | Result JSON per run |
 | `docs/results.md`, `docs/benchmarks.md`, `docs/case-studies/` | Write-ups and generated tables |
-| `docs/HANDOFF.md` | Project record from before the split |
+| `docs/notes/` | Notes and the design spec written before each analysis |
 
 ## Use
 

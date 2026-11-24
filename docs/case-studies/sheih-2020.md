@@ -39,7 +39,7 @@ says which came first, and nothing here claims an order from it.
   T cells (CLL) or central memory CD8 T cells (NHL), and cells were sorted on the EGFRt marker that
   the CAR construct carries (same section, and Methods).
 - **Time points:** the infusion product (IP) and three blood samples per patient, with GEO's labels
-  as written (Task 9's note, [research/2026-11-19-sheih-verification.md](../superpowers/research/2026-11-19-sheih-verification.md)):
+  as written (Task 9's note, [research/2026-11-19-sheih-verification.md](../notes/research/2026-11-19-sheih-verification.md)):
 
   | Patient | Time points |
   |---|---|

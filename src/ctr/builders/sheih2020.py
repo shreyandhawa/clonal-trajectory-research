@@ -72,7 +72,7 @@ def _s(gsm: int, patient: str, timepoint: str, aggr: int) -> Sample:
     return Sample(f"GSM{gsm}", member, patient, timepoint, day, aggr)
 
 
-# Task 9's GSM table (docs/superpowers/research/2026-11-19-sheih-verification.md).
+# Task 9's GSM table (docs/notes/research/2026-11-19-sheih-verification.md).
 REAL_SAMPLES: tuple[Sample, ...] = (
     _s(3583861, "CLL-1", "IP", 1),
     _s(3583862, "CLL-1", "d21", 2),

@@ -107,9 +107,9 @@ max_controls_supported = 0
 # If verification fails, every served verdict is capped at provisional, with a note naming the failed verification. Declared 2026-11-17, before any verdict was computed.
 on_failure = "provisional"
 
-# ---- case study (spec docs/superpowers/specs/2026-11-12-tcell-clonotypes-design.md §6.2)
+# ---- case study (spec docs/notes/specs/2026-11-12-tcell-clonotypes-design.md §6.2)
 # Declared before any analysis, from the paper and the file headers only (Task 9's note,
-# docs/superpowers/research/2026-11-19-sheih-verification.md). Nothing was computed from clonotype,
+# docs/notes/research/2026-11-19-sheih-verification.md). Nothing was computed from clonotype,
 # CDR3 or gene values. Reasons for each value: the changelog entry of the same date.
 
 [case_study.sheih2020]   # declared before any analysis; see the changelog entry of the same date
@@ -274,7 +274,7 @@ pooled_diagnostic = true       # one pooled run per method, reported only as a l
 #             derived file was built, before any clone was counted and before any method ran on it.
 #             Written from Task 3's note (with Task 5a's sections), the GSM records and the
 #             literature; evidence for every item in
-#             docs/superpowers/research/2026-11-20-daniel2022-declaration.md. Nothing existing changed.
+#             docs/notes/research/2026-11-20-daniel2022-declaration.md. Nothing existing changed.
 #   * Captures, days, tissues: GSM5687827-GSM5687834 (8 TCR GSMs; chronic Clone 13, spleen, D8 and
 #     D21; PD-1+, gp33 mid, gp33- x2, gp33+ x2 at D21, gp33- and gp33+ at D8). Chronic only, because
 #     the Tpex root holds there (spec §6.1). D5 excluded: its matrix is a separate Seurat object with

@@ -123,7 +123,7 @@ class RealDataset:
 
 
 # Daniel 2022's kept captures (TCR GSMs): chronic, spleen, D8 and D21, none sorted on a state marker.
-# The declaration and each rule's evidence: docs/superpowers/research/2026-11-20-daniel2022-declaration.md.
+# The declaration and each rule's evidence: docs/notes/research/2026-11-20-daniel2022-declaration.md.
 _DANIEL_CAPTURES = [
     "GSM5687827",  # D21 PD-1+
     "GSM5687828",  # D21 gp33 mid
@@ -242,7 +242,7 @@ DATASETS: dict[str, RealDataset] = {
             gated=[],
             notes=(
                 "Evaluation only. Declared 2026-11-20, before any clone was counted and before any "
-                "method ran on it: docs/superpowers/research/2026-11-20-daniel2022-declaration.md. "
+                "method ran on it: docs/notes/research/2026-11-20-daniel2022-declaration.md. "
                 "Chronic spleen D8 and D21, no state-gated capture; namespace = capture. Lineages "
                 "from Hudson 2019, Zander 2019 and Beltra 2020: TEx_prog -> {TEx_int | TEx_KLR} -> TEx, "
                 "and TEx_prog -> {TEx_int | TEx_KLR}; not written as label lists, none gated."

@@ -20,8 +20,7 @@ page being the API's JSON array as returned. Nothing was edited after the fetch.
 **What this copy proves, and what it does not.** It is a copy made by the author, not a record signed by GitHub,
 so it is only as trustworthy as the author. While GitHub still serves the same data, a reader can re-run
 `fetch.sh` and compare. After that, the copy stands on its own, and the commit hashes it names can still be
-checked against the git history (and against the Software Heritage snapshot, if that has been made; see
-[archive-steps.md](../archive-steps.md)).
+checked against the git history.
 
 The responses include each commit's author name and email. The same details are already in this repository's
 public git history.

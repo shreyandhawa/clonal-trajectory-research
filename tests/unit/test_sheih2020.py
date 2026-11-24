@@ -359,7 +359,7 @@ def test_bench_fetch_finds_a_case_study_by_its_id_but_all_skips_it(
     assert CliRunner().invoke(app, ["fetch", "nope"]).exit_code == 2
 
 
-# --- pinned sample table, written by hand from Task 9's GSM table (docs/superpowers/research) ---
+# --- pinned sample table, written by hand from Task 9's GSM table (docs/notes/research) ---
 # (GE GSM, VDJ GSM, patient, time point, day, aggr id); the infusion product has no sampling day.
 NOTE_TABLE = (
     ("GSM3583861", "GSM3583877", "CLL-1", "IP", None, 1),
