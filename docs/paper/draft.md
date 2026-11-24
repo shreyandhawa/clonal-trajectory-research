@@ -1,3 +1,5 @@
+Internal working draft, not for publication.
+
 <!--
 Draft for review. Every result number is wrapped in an n-tag (format in tests/unit/test_paper_numbers.py) and is
 checked against the result files by that test (keys are computed in src/ctr/paper_numbers.py). Times and commits
